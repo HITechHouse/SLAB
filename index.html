@@ -2,6 +2,11 @@
 <html lang="en">
 
 <head>
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Slab Segmentation - HI-TECH HOUSE</title>
@@ -29,11 +34,39 @@
           class="fas fa-moon"></i></button>
       <button class="btn"
         style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 14px; font-size: 13px;">Reset</button>
+      <button id="logoutBtn" class="btn"
+        style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); padding: 6px 14px; font-size: 13px;">Logout</button>
     </div>
   </header>
 
   <div class="wrap">
     <div class="controls">
+      <!-- Section 0: Project Information -->
+      <div class="control-card">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg-light); padding-bottom: 12px; margin-bottom: 16px;">
+          <label style="margin: 0; border: none; padding: 0;">🏗️ Project Information</label>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div>
+            <label style="margin: 4px 0 6px; font-size: 12px;">📌 Project Name</label>
+            <input type="text" id="projectName" placeholder="Enter project name...">
+          </div>
+          <div>
+            <label style="margin: 4px 0 6px; font-size: 12px;">👤 Project Owner</label>
+            <input type="text" id="projectOwner" placeholder="Enter project owner...">
+          </div>
+          <div>
+            <label style="margin: 4px 0 6px; font-size: 12px;">📋 Consultant</label>
+            <input type="text" id="projectConsultant" placeholder="Enter consultant name...">
+          </div>
+          <div>
+            <label style="margin: 4px 0 6px; font-size: 12px;">🏢 Main Contractor</label>
+            <input type="text" id="projectContractor" placeholder="Enter main contractor...">
+          </div>
+        </div>
+      </div>
+
       <!-- Section 1: Box Types -->
       <div class="control-card">
         <div
@@ -91,12 +124,6 @@
         <div
           style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg-light); padding-bottom: 12px; margin-bottom: 16px;">
           <label style="margin: 0; border: none; padding: 0;">🧩 Piece Types</label>
-          <div style="display: flex; gap: 8px;">
-            <button id="addType" class="btn" style="padding: 8px 16px; font-size: 12px; background: var(--primary);">+
-              Add Piece</button>
-            <button id="clearTypes" class="btn ghost"
-              style="padding: 8px 16px; font-size: 12px; border: 1px solid var(--border);">Clear All</button>
-          </div>
         </div>
         <div style="overflow-x: auto;">
           <table id="pieceTypesTable" style="width: 100%; border-collapse: collapse; font-size: 13px;">
@@ -123,6 +150,12 @@
               <!-- Piece rows injected by JS -->
             </tbody>
           </table>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 16px;">
+          <button id="addType" class="btn" style="padding: 8px 16px; font-size: 12px; background: var(--primary);">+
+            Add Piece</button>
+          <button id="clearTypes" class="btn ghost"
+            style="padding: 8px 16px; font-size: 12px; border: 1px solid var(--border);">Clear All</button>
         </div>
         <div id="types-grid" style="display: none;"></div>
         <div id="types" style="display: none;"></div>
@@ -311,6 +344,12 @@
     </div>
   </div>
   <script src="src.js"></script>
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', function () {
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = 'login.html';
+    });
+  </script>
 </body>
 
 

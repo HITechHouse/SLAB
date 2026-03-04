@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Slab Segmentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --secondary: #7c3aed;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --error: #ef4444;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('login_bg.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(79, 70, 229, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 40%);
+            z-index: 1;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            color: white;
+        }
+
+        .logo-box {
+            background: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-box img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+            padding-left: 4px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 15px;
+            color: white;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        input:focus {
+            border-color: #a78bfa;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 10px;
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 45px rgba(79, 70, 229, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        #errorMsg {
+            color: #fda4af;
+            font-size: 13px;
+            margin-top: 16px;
+            display: none;
+            background: rgba(225, 29, 72, 0.15);
+            padding: 12px;
+            border-radius: 12px;
+            animation: shake 0.4s ease-in-out;
+            border: 1px solid rgba(225, 29, 72, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-box">
+                <img src="logo.png" alt="Logo">
+            </div>
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Industrial Slab Segmentation & Packing System</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="e.g: admin" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-login">Login to System</button>
+                <div id="errorMsg">Incorrect username or password</div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (user === 'admin' && pass === 'admin') {
+                localStorage.setItem('isLoggedIn', 'true');
+                window.location.href = 'index.html';
+            } else {
+                errorMsg.style.display = 'block';
+                setTimeout(() => {
+                    errorMsg.style.animation = 'none';
+                    errorMsg.offsetHeight;
+                    errorMsg.style.animation = null;
+                }, 10);
+            }
+        });
+    </script>
+</body>
+
+</html>

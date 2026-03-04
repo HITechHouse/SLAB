@@ -2624,7 +2624,41 @@ function renderComparisonSummary() {
   const effectiveH = binH - 2 * outerMargin;
 
   // Final Report Section
-  let reportHTML = `
+  // Gather project info
+  const projName = (document.getElementById('projectName') || {}).value || '';
+  const projOwner = (document.getElementById('projectOwner') || {}).value || '';
+  const projConsultant = (document.getElementById('projectConsultant') || {}).value || '';
+  const projContractor = (document.getElementById('projectContractor') || {}).value || '';
+  const hasProjectInfo = projName || projOwner || projConsultant || projContractor;
+
+  let reportHTML = '';
+
+  if (hasProjectInfo) {
+    reportHTML += `
+    <div style="margin-bottom:20px;padding:20px;background:linear-gradient(135deg,rgba(79,70,229,0.08),rgba(168,85,247,0.04));border-radius:12px;border:2px solid rgba(79,70,229,0.2)">
+      <h3 style="color:var(--primary);margin-top:0;margin-bottom:14px;font-size:18px;">🏗️ ${currentLang === 'ar' ? 'معلومات المشروع' : 'Project Information'}</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+        ${projName ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--primary)">
+          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">📌 ${currentLang === 'ar' ? 'اسم المشروع' : 'Project Name'}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projName}</div>
+        </div>` : ''}
+        ${projOwner ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--secondary)">
+          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">👤 ${currentLang === 'ar' ? 'صاحب المشروع' : 'Project Owner'}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projOwner}</div>
+        </div>` : ''}
+        ${projConsultant ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--success)">
+          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">📋 ${currentLang === 'ar' ? 'الاستشاري' : 'Consultant'}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projConsultant}</div>
+        </div>` : ''}
+        ${projContractor ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--warning)">
+          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">🏢 ${currentLang === 'ar' ? 'المقاول الرئيسي' : 'Main Contractor'}</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projContractor}</div>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  reportHTML += `
     <div style="margin-bottom:24px;padding:20px;background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.05));border-radius:12px;border:2px solid rgba(16,185,129,0.3)">
       <h3 style="color:var(--success);margin-top:0;margin-bottom:16px;font-size:18px;">📋 Final Report -Lengths and Margins</h3>
       
