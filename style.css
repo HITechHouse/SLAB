@@ -387,7 +387,7 @@ select:focus {
 
 .canvas-body {
   overflow: hidden;
-  max-height: 2000px;
+  max-height: 50000px;
   transition:
     max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.35s ease,
@@ -556,7 +556,7 @@ select:focus {
 }
 
 .algo-detail-inner.open {
-  max-height: 3000px;
+  max-height: 50000px;
   opacity: 1;
   padding: 16px;
 }

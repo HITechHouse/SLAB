@@ -8,7 +8,7 @@ style.textContent = `
     }
     to {
       opacity: 0;
-      transform: translateX(20px);
+      transform: translateX(2 mm);
     }
   }
 `;
@@ -881,11 +881,11 @@ const boxTypesBody = document.getElementById("boxTypesBody");
 const pieceTypesBody = document.getElementById("pieceTypesBody");
 const addBoxTypeBtn = document.getElementById("addBoxType");
 
-/* === Box Type Management === */
-function addBoxTypeRow(name = "STN-001", w = 3270, h = 1590) {
+/* === SLAB Type Management === */
+function addBoxTypeRow(name = "", w = "", h = "") {
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><input class="boxName" type="text" value="${name}" placeholder="Box Name"></td>
+    <td><input class="boxName" type="text" value="${name}" placeholder="SLAB Name"></td>
     <td><input class="boxW" type="number" value="${w}" min="1"></td>
     <td><input class="boxH" type="number" value="${h}" min="1"></td>
     <td style="text-align:center"><button class="rmBox btn-remove">✕</button></td>
@@ -895,7 +895,7 @@ function addBoxTypeRow(name = "STN-001", w = 3270, h = 1590) {
     setTimeout(() => { tr.remove(); syncBoxTypeDropdowns(); }, 200);
   };
   tr.querySelector(".boxName").addEventListener("input", () => syncBoxTypeDropdowns());
-  boxTypesBody.appendChild(tr);
+  boxTypesBody.insertBefore(tr, boxTypesBody.firstChild);
   syncBoxTypeDropdowns();
 }
 
@@ -920,7 +920,7 @@ function syncBoxTypeDropdowns() {
   });
 }
 
-addBoxTypeBtn.onclick = () => addBoxTypeRow("STN-NEW", 2000, 1200);
+addBoxTypeBtn.onclick = () => addBoxTypeRow("", "", "");
 
 /* === Piece Row Management === */
 function addPieceRow(boxType = "", w = 120, h = 80, n = 5) {
@@ -976,22 +976,22 @@ function createCanvasForBin(
 ) {
   const wrap = document.createElement("div");
   wrap.className = "canvas-wrap panel";
-  wrap.style.minHeight = "280px";
+  wrap.style.minHeight = "28 mm";
   wrap.style.animation = "slideIn 0.4s ease-out";
 
   wrap.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px">
-      <div style="font-weight:700;font-size:15px;color:var(--text-dark);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</div>
-      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1 mm;gap: mm">
+      <div style="font-weight:700;font-size:12px;color:var(--text-dark);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</div>
+      <div style="display:flex;gap: mm;align-items:center;flex-shrink:0">
         <button class="btn-canvas-toggle" title="Show / Hide panel">👁 Hide</button>
-        <button class="btn ghost" style="padding:6px 12px;font-size:11px;margin:0">⬇ Image</button>
+        <button class="btn ghost" style="padding: mm 1 mm;font-size:12px;margin:0">⬇ Image</button>
       </div>
     </div>
 
     <div class="canvas-body">
+      <div class="legend" style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
       <canvas width="640" height="420"></canvas>
-      <div class="legend" style="margin-top:12px"></div>
-      <div class="binSummary" style="margin-top:12px"></div>
+      <div class="binSummary" style="margin-top:1 mm"></div>
     </div>
   `;
 
@@ -1012,7 +1012,7 @@ function createCanvasForBin(
     const isCollapsed = canvasBody.classList.contains("collapsed");
     canvasBody.classList.toggle("collapsed", !isCollapsed);
     toggleBtn.innerHTML = isCollapsed ? "👁 Hide" : "🙈 Show";
-    wrap.style.minHeight = isCollapsed ? "280px" : "";
+    wrap.style.minHeight = isCollapsed ? "28 mm" : "";
   };
   let legendHTML = "";
   for (let i = 0; i < types.length; i++) {
@@ -1020,9 +1020,9 @@ function createCanvasForBin(
     const name = types[i].name || "T" + i;
     if (count > 0) {
       legendHTML += `
-        <div class="legend-item">
-          <div class="sw" style="background:${legendColor(i)};"></div>
-          <span><strong>${name}</strong> ${types[i].w}×${types[i].h} (×${count})</span>
+        <div class="legend-item" style="background:#f8fafc;padding:6px 12px;border-radius:20px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dark);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+          <div class="sw" style="background:${legendColor(i)};width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,0.1);"></div>
+          <span>${name} <span style="font-weight:400;color:var(--text-muted);font-size:12px;">${types[i].w}×${types[i].h}</span> <span style="color:var(--primary);font-weight:800;font-size:14px;">(×${count})</span></span>
         </div>
       `;
     }
@@ -1031,8 +1031,8 @@ function createCanvasForBin(
   if (showWaste && bin.freeRects.length > 0) {
     const emptyCount = bin.freeRects.length;
     legendHTML += `
-      <div class="legend-item">
-        <div class="sw" style="background:linear-gradient(135deg, rgba(236,72,153,0.4), rgba(236,72,153,0.2));"></div>
+      <div class="legend-item" style="background:#fdf2f8;padding:6px 12px;border-radius:20px;border:1px solid #fbcfe8;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dark);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+        <div class="sw" style="background:linear-gradient(135deg, rgba(236,72,153,0.4), rgba(236,72,153,0.2));width:14px;height:14px;border-radius:4px;border:1px solid rgba(236,72,153,0.3);"></div>
         <span><strong>🟪 Empty</strong> (${emptyCount} areas)</span>
       </div>
     `;
@@ -1058,18 +1058,18 @@ function createCanvasForBin(
   let wastePercent = (100 - utilization).toFixed(1);
 
   let tableHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
-      <div style="padding:10px;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.05));border-radius:8px;border:1px solid rgba(16,185,129,0.2)">
-        <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">📦 Pieces</div>
-        <div style="font-size:18px;font-weight:700;color:var(--success);margin-top:3px">${totalPieces}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1 mm;margin-bottom:1 mm">
+      <div style="padding:1 mm;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.05));border-radius: mm;border: 2px solid rgba(16,185,129,0.2)">
+        <div style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:0. mm">📦 Pieces</div>
+        <div style="font-size:12px;font-weight:700;color:var(--success);margin-top: mm">${totalPieces}</div>
       </div>
-      <div style="padding:10px;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(99,102,241,0.05));border-radius:8px;border:1px solid rgba(99,102,241,0.2)">
-        <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">📊 Utilization</div>
-        <div style="font-size:18px;font-weight:700;color:var(--primary);margin-top:3px">${utilization}%</div>
+      <div style="padding:1 mm;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(99,102,241,0.05));border-radius: mm;border: 2px solid rgba(99,102,241,0.2)">
+        <div style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:0. mm">📊 Utilization</div>
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-top: mm">${utilization}%</div>
       </div>
-      <div style="padding:10px;background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.05));border-radius:8px;border:1px solid rgba(239,68,68,0.2)">
-        <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">⚠️ Waste</div>
-        <div style="font-size:18px;font-weight:700;color:var(--error);margin-top:3px">${wastePercent}%</div>
+      <div style="padding:1 mm;background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.05));border-radius: mm;border: 2px solid rgba(239,68,68,0.2)">
+        <div style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:0. mm">⚠️ Waste</div>
+        <div style="font-size:12px;font-weight:700;color:var(--error);margin-top: mm">${wastePercent}%</div>
       </div>
     </div>
 
@@ -1091,7 +1091,7 @@ function createCanvasForBin(
     tableHTML += `
       <tr>
         <td style="font-weight:700;color:${legendColor(i)};">${name}</td>
-        <td>${types[i].w}×${types[i].h}px</td>
+        <td>${types[i].w}×${types[i].h} mm</td>
         <td style="font-weight:700;color:var(--primary)">${counts[i]}</td>
         <td style="font-size:12px;color:var(--text-light)">${typeArea.toLocaleString()}</td>
       </tr>
@@ -1100,12 +1100,12 @@ function createCanvasForBin(
 
   tableHTML += `
     <tr style="background:rgba(99,102,241,0.08);font-weight:700">
-      <td colspan="3" style="text-align:left;padding-left:16px">Total Used:</td>
-      <td>${totalUsedArea.toLocaleString()} px²</td>
+      <td colspan="3" style="text-align:left;padding-left:12px">Total Used:</td>
+      <td>${totalUsedArea.toLocaleString()} mm²</td>
     </tr>
     <tr style="background:rgba(239,68,68,0.08);font-weight:700">
-      <td colspan="3" style="text-align:left;padding-left:16px">Free Area:</td>
-      <td style="color:var(--error)">${wasteArea.toLocaleString()} px²</td>
+      <td colspan="3" style="text-align:left;padding-left:12px">Free Area:</td>
+      <td style="color:var(--error)">${wasteArea.toLocaleString()} mm²</td>
     </tr>
   </table>`;
   summaryDiv.innerHTML = tableHTML;
@@ -1358,7 +1358,6 @@ function exportAll(format) {
   }
 }
 
-/* ===================== FINAL REPORT EXPORT ===================== */
 function exportFinalReport(lang = "en", filteredRecords = null) {
   // Get best packing result
   if (!window.lastResults || Object.keys(window.lastResults).length === 0) {
@@ -1370,6 +1369,14 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
 
   const best = window.bestPackingResult;
 
+  // Gather Project Information
+  const projectInfo = {
+    name: document.getElementById("projectName")?.value || (lang === "ar" ? "مشروع غير مسمى" : "Unnamed Project"),
+    owner: document.getElementById("projectOwner")?.value || "-",
+    consultant: document.getElementById("projectConsultant")?.value || "-",
+    contractor: document.getElementById("projectContractor")?.value || "-"
+  };
+
   // Build records
   let records = [];
   let globalIndex = 1;
@@ -1377,8 +1384,17 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
     ? new Set(filteredRecords.map((r) => r.pieceId))
     : null;
 
+  // Track local bin index per box type
+  const btBinCounts = {};
+
   for (let bi = 0; bi < best.bins.length; bi++) {
-    const placements = best.bins[bi].placements;
+    const binEntry = best.bins[bi];
+    const btName = binEntry.boxTypeName || "DEFAULT";
+    if (btBinCounts[btName] === undefined) btBinCounts[btName] = 0;
+    btBinCounts[btName]++;
+    const localSlabIndex = btBinCounts[btName];
+
+    const placements = binEntry.placements;
     for (let p of placements) {
       const typeIndex = p.item.typeIndex;
       const pieceId = `${bi}_${typeIndex}_${p.rect.x}_${p.rect.y}`;
@@ -1391,7 +1407,8 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
       const h = p.rect.height;
       records.push({
         index: globalIndex++,
-        bin: bi + 1,
+        bin: localSlabIndex,
+        globalBin: bi + 1,
         type: typeIndex,
         id: id,
         name: name,
@@ -1414,18 +1431,47 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
     );
     return;
   }
+
   const totalUsed = records.reduce((s, r) => s + r.area, 0);
-  const binW = best.bins[0].bin.binWidth;
-  const binH = best.bins[0].bin.binHeight;
-  // Count only bins that contain filtered pieces
-  const filteredBinNumbers = [...new Set(records.map((r) => r.bin))];
-  const filteredBinsCount = filteredBinNumbers.length;
-  const totalArea = binW * binH * filteredBinsCount;
+
+  // Calculate total area based on the actual bins used for the filtered pieces
+  const filteredBinIndices = [...new Set(records.map((r) => r.globalBin - 1))];
+
+  // Group identical bins
+  const groupedBins = [];
+  const sigMap = new Map();
+  for (let idx of filteredBinIndices) {
+    const binEntry = best.bins[idx];
+    const sorted = [...binEntry.placements].sort((a, b) => {
+      if (Math.abs(a.rect.x - b.rect.x) > 0.1) return a.rect.x - b.rect.x;
+      if (Math.abs(a.rect.y - b.rect.y) > 0.1) return a.rect.y - b.rect.y;
+      if (Math.abs(a.rect.width - b.rect.width) > 0.1) return a.rect.width - b.rect.width;
+      return a.rect.height - b.rect.height;
+    });
+    const sig = sorted.map(p => `${Math.round(p.rect.x)},${Math.round(p.rect.y)},${Math.round(p.rect.width)},${Math.round(p.rect.height)}`).join('|');
+    const btName = binEntry.boxTypeName || "DEFAULT";
+    const fullSig = btName + "||" + sig;
+
+    if (sigMap.has(fullSig)) {
+      groupedBins[sigMap.get(fullSig)].count++;
+      groupedBins[sigMap.get(fullSig)].indices.push(idx);
+    } else {
+      sigMap.set(fullSig, groupedBins.length);
+      groupedBins.push({ binIdx: idx, count: 1, indices: [idx], binEntry, btName });
+    }
+  }
+
+  const filteredBinsCount = filteredBinIndices.length;
+  let totalArea = 0;
+  for (let idx of filteredBinIndices) {
+    const b = best.bins[idx];
+    totalArea += b.bin.binWidth * b.bin.binHeight;
+  }
+
   const utilization = totalArea > 0 ? (totalUsed / totalArea) * 100 : 0;
 
   const isRTL = lang === "ar";
-  const title =
-    lang === "ar" ? "تقرير التعبئة النهائي" : "Final Packing Report";
+  const title = lang === "ar" ? "تقرير التعبئة النهائي" : "Final Packing Report";
   const companyName = lang === "ar" ? "دار التقنية الحديثة" : "Hi-Tech House";
 
   // Translations
@@ -1437,6 +1483,11 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
       visual: "Visual Representation",
       summary: "Pieces Summary",
       details: "Packed Pieces Details",
+      projectInfo: "Project Information",
+      projectName: "Project Name",
+      projectOwner: "Project Owner",
+      consultant: "Consultant",
+      contractor: "Main Contractor",
     },
     ar: {
       bins: "لوح",
@@ -1445,11 +1496,17 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
       visual: "التمثيل البصري",
       summary: "ملخص القطع",
       details: "تفاصيل القطع الموزعة",
+      projectInfo: "معلومات المشروع",
+      projectName: "اسم المشروع",
+      projectOwner: "صاحب المشروع",
+      consultant: "الاستشاري",
+      contractor: "المقاول الرئيسي",
     },
   };
   const t = translations[lang];
 
   let html = `
+<!DOCTYPE html>
 <html lang="${lang}">
 <head>
   <meta charset="utf-8">
@@ -1458,28 +1515,36 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
   <style>
     :root { --primary: #6366f1; --success: #10b981; --error: #ef4444; --text-dark: #0f172a; --text-light: #64748b; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: var(--text-dark); padding: 20px; ${isRTL ? "direction: rtl;" : ""} }
-    .report-container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; }
-    .header { background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%); color: white; padding: 24px; text-align: center; }
-    .company-name { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-    .report-title { font-size: 18px; opacity: 0.95; }
-    .content { padding: 24px; }
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card { padding: 20px; border-radius: 12px; text-align: center; }
-    .stat-card.primary { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); }
-    .stat-card.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
-    .stat-card.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); }
-    .stat-value { font-size: 28px; font-weight: 700; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); color: var(--text-dark); padding: 2 mm; ${isRTL ? "direction: rtl;" : ""} }
+    .report-container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
+    .header { background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%); color: white; padding: 2 mm; text-align: center; }
+    .company-name { font-size: 2 mm; font-weight: 700; margin-bottom:  mm; }
+    .report-title { font-size: 1 mm; opacity: 0.95; }
+    .content { padding: 2 mm; }
+    
+    .project-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1 mm; margin-bottom: 24px; padding: 2 mm; background: #f8fafc; border:  mm solid #e2e8f0; border-radius: 12px; }
+    .info-item { display: flex; flex-direction: column; gap: 8px; }
+    .info-label { font-size: 1 mm; color: var(--text-light); font-weight: 600; text-transform: uppercase; }
+    .info-value { font-size: 1 mm; font-weight: 700; color: var(--text-dark); }
+    
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1 mm; margin-bottom: 24px; }
+    .stat-card { padding: 2 mm; border-radius: 12px; text-align: center; }
+    .stat-card.primary { background: rgba(99,102,241,0.1); border:  mm solid rgba(99,102,241,0.2); }
+    .stat-card.success { background: rgba(16,185,129,0.1); border:  mm solid rgba(16,185,129,0.2); }
+    .stat-card.error { background: rgba(239,68,68,0.1); border:  mm solid rgba(239,68,68,0.2); }
+    .stat-value { font-size: 2 mm; font-weight: 700; }
     .stat-card.primary .stat-value { color: var(--primary); }
     .stat-card.success .stat-value { color: var(--success); }
     .stat-card.error .stat-value { color: var(--error); }
-    .stat-label { font-size: 14px; color: var(--text-light); margin-top: 4px; }
-    h3 { margin-bottom: 16px; color: var(--text-dark); }
+    .stat-label { font-size: 1 mm; color: var(--text-light); margin-top:  mm; }
+    
+    h3 { margin-bottom: 1 mm; color: var(--text-dark); border-bottom:  mm solid #f1f5f9; padding-bottom:  mm; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-    th, td { padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+    th, td { padding: 1 mm; text-align: center; border-bottom:  mm solid #e2e8f0; }
     th { background: rgba(99,102,241,0.08); font-weight: 600; }
     tr:hover { background: rgba(99,102,241,0.04); }
-    .footer { padding: 16px; text-align: center; color: var(--text-light); font-size: 12px; border-top: 1px solid #e2e8f0; }
+    .footer { padding: 1 mm; text-align: center; color: var(--text-light); font-size: 1 mm; border-top:  mm solid #e2e8f0; }
+    @media print { body { padding: 0; background: white; } .report-container { box-shadow: none; border: none; } }
   </style>
 </head>
 <body>
@@ -1489,6 +1554,26 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
       <div class="report-title">${title}</div>
     </div>
     <div class="content">
+      <h3>${t.projectInfo}</h3>
+      <div class="project-info-grid">
+        <div class="info-item">
+          <span class="info-label">${t.projectName}</span>
+          <span class="info-value">${projectInfo.name}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">${t.projectOwner}</span>
+          <span class="info-value">${projectInfo.owner}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">${t.consultant}</span>
+          <span class="info-value">${projectInfo.consultant}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">${t.contractor}</span>
+          <span class="info-value">${projectInfo.contractor}</span>
+        </div>
+      </div>
+
       <div class="stats-row">
         <div class="stat-card primary">
           <div class="stat-value">${filteredBinsCount}</div>
@@ -1504,122 +1589,131 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
         </div>
       </div>
       
+      <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--text-dark); margin-bottom: 12px; font-size: 14px;">📦 ${lang === 'ar' ? 'ملخص حسب نوع الصندوق (SLAB Type)' : 'Summary by SLAB Type'}</h4>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          ${Object.entries(btBinCounts).map(([bt, count]) => `
+            <div style="background: white; border: 1.5px solid rgba(99,102,241,0.2); padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--primary);">
+              <span style="color: var(--text-light);">${bt}:</span> ${count} ${t.bins}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+      
       <h3>${t.summary}</h3>
       <table>
-        <tr><th>#</th><th>Name</th><th>Width</th><th>Height</th><th>Qty</th><th>Area</th></tr>
-`;
-
-  // Group by piece type
-  const pieceSummary = {};
-  for (let r of records) {
-    const key = r.name + "_" + r.w + "_" + r.h;
-    if (!pieceSummary[key])
-      pieceSummary[key] = { name: r.name, w: r.w, h: r.h, count: 0, area: 0 };
-    pieceSummary[key].count++;
-    pieceSummary[key].area += r.area;
-  }
-  let idx = 1;
-  for (let key in pieceSummary) {
-    const p = pieceSummary[key];
-    html += `<tr><td>${idx++}</td><td>${p.name}</td><td>${p.w}</td><td>${p.h}</td><td>${p.count}</td><td>${p.area}</td></tr>`;
-  }
-
-  html += `
+        <tr><th>#</th><th>Name</th><th>Width (mm)</th><th>Height (mm)</th><th>Qty</th><th>Area (mm²)</th></tr>
+        ${(() => {
+      const pieceSummary = {};
+      for (let r of records) {
+        const key = r.name + "_" + r.w + "_" + r.h;
+        if (!pieceSummary[key])
+          pieceSummary[key] = { name: r.name, w: r.w, h: r.h, count: 0, area: 0 };
+        pieceSummary[key].count++;
+        pieceSummary[key].area += r.area;
+      }
+      let summaryHtml = "";
+      let sIdx = 1;
+      for (let key in pieceSummary) {
+        const p = pieceSummary[key];
+        summaryHtml += `<tr><td>${sIdx++}</td><td>${p.name}</td><td>${p.w}</td><td>${p.h}</td><td>${p.count}</td><td>${p.area.toLocaleString()} mm²</td></tr>`;
+      }
+      return summaryHtml;
+    })()}
       </table>
       
       <h3>${t.details}</h3>
       <table>
-        <tr><th>Slab</th><th>Type</th><th>Name</th><th>W</th><th>H</th><th>X</th><th>Y</th></tr>
-`;
-
-  for (let r of records) {
-    html += `<tr><td>${r.bin}</td><td>T${r.type}</td><td>${r.name}</td><td>${r.w}</td><td>${r.h}</td><td>${r.x}</td><td>${r.y}</td></tr>`;
-  }
-
-  html += `
+        <tr><th>Slab</th><th>Type</th><th>Name</th><th>W (mm)</th><th>H (mm)</th><th>X (mm)</th><th>Y (mm)</th></tr>
+        ${records.map(r => `<tr><td>${r.bin}</td><td>T${r.type}</td><td>${r.name}</td><td>${r.w}</td><td>${r.h}</td><td>${r.x}</td><td>${r.y}</td></tr>`).join("")}
       </table>
       
       <h3>${t.visual}</h3>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 24px;">
-`;
-
-  // Generate canvas only for bins that contain filtered pieces
-  for (let b = 1; b <= best.bins.length; b++) {
-    const binPieces = records.filter((r) => r.bin === b);
-    if (binPieces.length === 0) continue; // Skip bins with no matching pieces
-    html += `
-        <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-          <h4 style="margin: 0 0 12px 0; text-align: center;">Slab #${b} (${binW} × ${binH} mm)</h4>
-          <canvas id="canvas_${b}" width="640" height="480" style="width: 100%; border: 2px solid #6366f1; border-radius: 8px;"></canvas>
-        </div>
-`;
-  }
-
-  html += `
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(45 mm, 1fr)); gap: 2 mm; margin-bottom: 24px;">
+        ${groupedBins.map(group => {
+      const b = group.binIdx + 1;
+      const binData = group.binEntry;
+      const bw = binData.bin.binWidth;
+      const bh = binData.bin.binHeight;
+      const boxLabel = ` [${group.btName}]`;
+      let slabInfoStr = "";
+      if (group.count > 1) {
+        slabInfoStr = lang === "ar"
+          ? ` (x${group.count} ألواح متطابقة)`
+          : ` (x${group.count} Identical Slabs)`;
+      } else {
+        slabInfoStr = lang === "ar" ? ` (#${b})` : ` (#${b})`;
+      }
+      return `
+            <div style="background: white; border:  mm solid #e2e8f0; border-radius: 12px; padding: 2 mm; box-shadow: 0  mm  mm rgba(0,0,0,0.05);">
+              <h4 style="margin: 0 0 1 mm 0; text-align: center; color: var(--text-dark); font-size: 1 mm;">
+                ${t.bins}${boxLabel}${slabInfoStr} (${bw} × ${bh} mm)
+              </h4>
+              <div style="aspect-ratio: 4/3; width: 100%; position: relative;">
+                <canvas id="canvas_${b}" width="800" height="600" style="width: 100%; height: 100%; border:  mm solid var(--primary); border-radius:  mm;"></canvas>
+              </div>
+            </div>
+          `;
+    }).join("")}
       </div>
     </div>
     <div class="footer">
-      <p>© ${companyName} ${new Date().getFullYear()} | ${lang === "ar" ? "تقرير التعبئة النهائي" : "Final Packing Report"}</p>
+      <p>© ${companyName} ${new Date().getFullYear()} | ${lang === "ar" ? "تقرير التعبئة كليا" : "Full Packing Report"}</p>
     </div>
   </div>
   
   <script>
-`;
-
-  // Generate canvas drawing code (only for bins with filtered pieces)
-  for (let b = 1; b <= best.bins.length; b++) {
-    const binPieces = records.filter((r) => r.bin === b);
-    if (binPieces.length === 0) continue; // Skip bins with no matching pieces
-    html += `
-    (function() {
-      const cv = document.getElementById('canvas_${b}');
-      if (!cv) return;
-      const ctx = cv.getContext('2d');
-      const binW = ${binW};
-      const binH = ${binH};
-      const scale = Math.min((cv.width-80)/binW, (cv.height-80)/binH, 1);
-      const offsetX = (cv.width - binW*scale)/2;
-      const offsetY = (cv.height - binH*scale)/2;
-      
-      // Clear and draw bin
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(0, 0, cv.width, cv.height);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(offsetX, offsetY, binW*scale, binH*scale);
-      ctx.strokeStyle = '#6366f1';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(offsetX, offsetY, binW*scale, binH*scale);
-      
-      // Draw only filtered/selected pieces
-      const pieces = [${binPieces.map((r) => `{x:${r.x},y:${r.y},w:${r.w},h:${r.h},type:${r.type},name:'${r.name}'}`).join(",")}];
-      pieces.forEach((p, i) => {
-        const hue = (p.type * 40) % 360;
-        const color = 'hsl(' + hue + ', 70%, 60%)';
-        const x = offsetX + p.x * scale;
-        const y = offsetY + p.y * scale;
-        const w = p.w * scale;
-        const h = p.h * scale;
+    ${groupedBins.map(group => {
+      const b = group.binIdx + 1;
+      const binData = group.binEntry;
+      const bw = binData.bin.binWidth;
+      const bh = binData.bin.binHeight;
+      const binPieces = records.filter((r) => r.globalBin === b);
+      return `
+      (function() {
+        const cv = document.getElementById('canvas_${b}');
+        if (!cv) return;
+        const ctx = cv.getContext('2d');
+        const binW = ${bw};
+        const binH = ${bh};
+        const scale = Math.min((cv.width-60)/binW, (cv.height-60)/binH, 1);
+        const offsetX = (cv.width - binW*scale)/2;
+        const offsetY = (cv.height - binH*scale)/2;
         
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, w, h);
-        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(x, y, w, h);
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(0, 0, cv.width, cv.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(offsetX, offsetY, binW*scale, binH*scale);
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(offsetX, offsetY, binW*scale, binH*scale);
         
-        // Label
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 10px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        if (w > 30 && h > 20) {
-          ctx.fillText(p.name, x + w/2, y + h/2);
-        }
-      });
-    })();
-`;
-  }
-
-  html += `
+        const pieces = [${binPieces.map((r) => `{x:${r.x},y:${r.y},w:${r.w},h:${r.h},type:${r.type},name:'${r.name}'}`).join(",")}];
+        pieces.forEach((p, i) => {
+          const hue = (p.type * 42) % 360;
+          const color = 'hsl(' + hue + ', 75%, 70%)';
+          const x = offsetX + p.x * scale;
+          const y = offsetY + p.y * scale;
+          const w = p.w * scale;
+          const h = p.h * scale;
+          
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, w, h);
+          ctx.strokeStyle = 'rgba(15, 23, 42, 0.3)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x, y, w, h);
+          
+          if (w > 25 && h > 15) {
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold ' + Math.max(10, Math.floor(12*scale)) + 'px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(p.name, x + w/2, y + h/2);
+          }
+        });
+      })();
+      `;
+    }).join("")}
   <\/script>
 </body>
 </html>`;
@@ -1629,7 +1723,7 @@ function exportFinalReport(lang = "en", filteredRecords = null) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "packing_report_" + lang + ".html";
+  a.download = "packing_report_" + lang + "_" + new Date().toISOString().slice(0, 10) + ".html";
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -1971,8 +2065,8 @@ function exportPiecesSummaryExcel() {
   // Create headers
   const headers =
     currentLang === "ar"
-      ? ["نوع القطعة", "العرض", "الارتفاع", "الكمية", "المساحة الإجمالية"]
-      : ["Piece Type", "Width", "Height", "Quantity", "Total Area"];
+      ? ["نوع القطعة", "العرض (mm)", "الارتفاع (mm)", "الكمية", "المساحة الإجمالية (mm²)"]
+      : ["Piece Type", "Width (mm)", "Height (mm)", "Quantity", "Total Area (mm²)"];
 
   // Create rows
   const rows = [];
@@ -2094,8 +2188,17 @@ function showPieceSelectionModal(targetType = "excel") {
   const best = window.bestPackingResult;
   const types = best.types;
 
+  // Track local bin index per box type
+  const btBinCounts = {};
+
   for (let bi = 0; bi < best.bins.length; bi++) {
-    const placements = best.bins[bi].placements;
+    const binEntry = best.bins[bi];
+    const btName = binEntry.boxTypeName || "DEFAULT";
+    if (btBinCounts[btName] === undefined) btBinCounts[btName] = 0;
+    btBinCounts[btName]++;
+    const localSlabIndex = btBinCounts[btName];
+
+    const placements = binEntry.placements;
     for (let p of placements) {
       const typeIndex = p.item.typeIndex;
       const pieceType = types[typeIndex];
@@ -2108,6 +2211,8 @@ function showPieceSelectionModal(targetType = "excel") {
 
       pieces.push({
         binIndex: bi,
+        localSlabIndex: localSlabIndex,
+        btName: btName,
         typeIndex: typeIndex,
         name: name,
         w: w,
@@ -2127,8 +2232,8 @@ function showPieceSelectionModal(targetType = "excel") {
   pieces.forEach((piece, index) => {
     const label =
       currentLang === "ar"
-        ? `${piece.name} - ${piece.w}×${piece.h} (لوح ${piece.binIndex + 1})`
-        : `${piece.name} - ${piece.w}×${piece.h} (Slab ${piece.binIndex + 1})`;
+        ? `${piece.name} - ${piece.w}×${piece.h} (لوح ${piece.localSlabIndex})`
+        : `${piece.name} - ${piece.w}×${piece.h} (Slab ${piece.localSlabIndex})`;
     dropdownHTML += `<option value="${index}">${label}</option>`;
   });
   pieceDropdown.innerHTML = dropdownHTML;
@@ -2138,13 +2243,13 @@ function showPieceSelectionModal(targetType = "excel") {
   pieces.forEach((piece, index) => {
     const label =
       currentLang === "ar"
-        ? `${piece.name} - ${piece.w}×${piece.h} (لوح ${piece.binIndex + 1})`
-        : `${piece.name} - ${piece.w}×${piece.h} (Slab ${piece.binIndex + 1})`;
+        ? `${piece.name} - ${piece.w}×${piece.h} (لوح ${piece.localSlabIndex})`
+        : `${piece.name} - ${piece.w}×${piece.h} (Slab ${piece.localSlabIndex})`;
     checklistHTML += `
-      <div class="piece-item" style="padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.2s;" data-label="${label.toLowerCase()}">
+      <div class="piece-item" style="padding: 1 mm; border-bottom:  mm solid rgba(0,0,0,0.05); transition: background 0.2s;" data-label="${label.toLowerCase()}">
         <label style="cursor: pointer; display: flex; align-items: center; width: 100%; margin: 0;">
-          <input type="checkbox" class="piece-checkbox" value="${index}" checked style="margin-right: 12px; width: 18px; height: 18px;">
-          <span style="font-size: 14px; font-weight: 500;">${label}</span>
+          <input type="checkbox" class="piece-checkbox" value="${index}" checked style="margin-right: 10px; width: 16px; height: 16px;">
+          <span style="font-size: 1 mm; font-weight: 500;">${label}</span>
         </label>
       </div>
     `;
@@ -2157,10 +2262,10 @@ function showPieceSelectionModal(targetType = "excel") {
     .sort()
     .forEach((typeName) => {
       typesHTML += `
-      <div class="type-item" style="padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+      <div class="type-item" style="padding: 1 mm; border-bottom:  mm solid rgba(0,0,0,0.05);">
         <label style="cursor: pointer; display: flex; align-items: center; width: 100%; margin: 0;">
-          <input type="checkbox" class="type-checkbox" value="${typeName}" checked style="margin-right: 12px; width: 18px; height: 18px;">
-          <span style="font-size: 14px; font-weight: 500;">${typeName}</span>
+          <input type="checkbox" class="type-checkbox" value="${typeName}" checked style="margin-right: 10px; width: 16px; height: 16px;">
+          <span style="font-size: 1 mm; font-weight: 500;">${typeName}</span>
         </label>
       </div>
     `;
@@ -2265,6 +2370,14 @@ function exportSelectedPiecesExcel() {
   const types = best.types;
   const filteredIds = new Set(filteredPieces.map((p) => p.pieceId));
 
+  // Gather Project Information
+  const projectInfo = {
+    name: document.getElementById("projectName")?.value || "-",
+    owner: document.getElementById("projectOwner")?.value || "-",
+    consultant: document.getElementById("projectConsultant")?.value || "-",
+    contractor: document.getElementById("projectContractor")?.value || "-"
+  };
+
   // Build pieces details data
   const headers =
     currentLang === "ar"
@@ -2289,24 +2402,17 @@ function exportSelectedPiecesExcel() {
 
   const rows = [];
 
-  for (let bi = 0; bi < best.bins.length; bi++) {
-    const placements = best.bins[bi].placements;
-    for (let p of placements) {
-      const typeIndex = p.item.typeIndex;
-      const pieceType = types[typeIndex];
-      if (!pieceType) continue;
-      const pieceId = `${bi}_${typeIndex}_${p.rect.x}_${p.rect.y}`;
+  // Add Project Info at the top
+  rows.push([currentLang === "ar" ? "معلومات المشروع" : "Project Information", "", "", "", "", "", ""]);
+  rows.push([currentLang === "ar" ? "اسم المشروع" : "Project Name", projectInfo.name, "", "", "", "", ""]);
+  rows.push([currentLang === "ar" ? "صاحب المشروع" : "Project Owner", projectInfo.owner, "", "", "", "", ""]);
+  rows.push([currentLang === "ar" ? "الاستشاري" : "Consultant", projectInfo.consultant, "", "", "", "", ""]);
+  rows.push([currentLang === "ar" ? "المقاول" : "Contractor", projectInfo.contractor, "", "", "", "", ""]);
+  rows.push(["", "", "", "", "", "", ""]);
 
-      if (!filteredIds.has(pieceId)) continue;
-
-      const name = pieceType.name || "Type " + (typeIndex + 1);
-      const w = p.rect.width;
-      const h = p.rect.height;
-      const x = p.rect.x;
-      const y = p.rect.y;
-
-      rows.push([bi + 1, typeIndex + 1, name, w, h, x, y]);
-    }
+  for (let piece of filteredPieces) {
+    if (!piece) continue;
+    rows.push([piece.localSlabIndex, piece.typeIndex + 1, piece.name, piece.w, piece.h, piece.x, piece.y]);
   }
 
   // Generate and download Excel file
@@ -2438,7 +2544,7 @@ function suggestOptimalFill(wasteRects) {
   // اقترح أفضل تقسيمات للمساحات الفارغة
   for (let i = 0; i < Math.min(5, wasteRects.length); i++) {
     const waste = wasteRects[i];
-    const divisionsW = Math.floor(waste.width / 20); // افترض أصغر وحدة 20px
+    const divisionsW = Math.floor(waste.width / 20); // افترض أصغر وحدة 2 mm
     const divisionsH = Math.floor(waste.height / 20);
 
     // تقسيمات مثالية
@@ -2496,18 +2602,18 @@ function buildAlgoDetailHTML(r) {
 
   // Stats mini-cards
   let html = `
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
-          <div style="padding:10px;background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.05));border-radius:8px;border:1px solid rgba(16,185,129,0.25);text-align:center">
-            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">📦 Slabs</div>
-            <div style="font-size:22px;font-weight:800;color:var(--success);margin-top:2px">${r.binsCount}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1 mm;margin-bottom:1 mm">
+          <div style="padding:1 mm;background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.05));border-radius: mm;border: 2px solid rgba(16,185,129,0.25);text-align:center">
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0. mm">📦 Slabs</div>
+            <div style="font-size:2 mm;font-weight:800;color:var(--success);margin-top: mm">${r.binsCount}</div>
           </div>
-          <div style="padding:10px;background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(99,102,241,0.05));border-radius:8px;border:1px solid rgba(99,102,241,0.25);text-align:center">
-            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">📊 Utilization</div>
-            <div style="font-size:22px;font-weight:800;color:var(--primary);margin-top:2px">${utilPct}%</div>
+          <div style="padding:1 mm;background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(99,102,241,0.05));border-radius: mm;border: 2px solid rgba(99,102,241,0.25);text-align:center">
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0. mm">📊 Utilization</div>
+            <div style="font-size:2 mm;font-weight:800;color:var(--primary);margin-top: mm">${utilPct}%</div>
           </div>
-          <div style="padding:10px;background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(239,68,68,0.05));border-radius:8px;border:1px solid rgba(239,68,68,0.25);text-align:center">
-            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">⚠️ Waste</div>
-            <div style="font-size:22px;font-weight:800;color:var(--error);margin-top:2px">${wastePct}%</div>
+          <div style="padding:1 mm;background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(239,68,68,0.05));border-radius: mm;border: 2px solid rgba(239,68,68,0.25);text-align:center">
+            <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0. mm">⚠️ Waste</div>
+            <div style="font-size:2 mm;font-weight:800;color:var(--error);margin-top: mm">${wastePct}%</div>
           </div>
         </div>`;
 
@@ -2534,16 +2640,19 @@ function buildAlgoDetailHTML(r) {
     const types = r.types || [];
 
     html += `
-          <div style="margin-bottom:16px;border:1px solid rgba(99,102,241,0.15);border-radius:10px;overflow:hidden">
-            <div style="background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(168,85,247,0.05));padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
-              <span style="font-weight:700;font-size:14px;color:var(--text-dark)">🟦 Slab #${bi + 1} — ${binEntry.bin.binWidth}×${binEntry.bin.binHeight} mm</span>
+          <div style="margin-bottom:1 mm;border: 2px solid rgba(99,102,241,0.15);border-radius:1 mm;overflow:hidden">
+            <div style="background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(168,85,247,0.05));padding:1 mm 1 mm;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-weight:700;font-size:12px;color:var(--text-dark)">🟦 Slab #${bi + 1} — ${binEntry.bin.binWidth}×${binEntry.bin.binHeight} mm</span>
               <span style="font-size:12px;color:var(--text-muted)">${placements.length} pieces · ${binUtil}% used</span>
             </div>
-            <div style="padding:12px">
-              <table style="margin:0;border-radius:6px;overflow:hidden">
+            <div class="table-responsive" style="padding:0">
+              <table style="margin:0; border-radius:0;">
+                <thead>
                 <tr>
                   <th>Type</th><th>Dimensions</th><th>Qty</th><th>Area (mm²)</th>
-                </tr>`;
+                </tr>
+                </thead>
+                <tbody>`;
 
     let totalTypeArea = 0;
     for (let ti in typeCounts) {
@@ -2561,13 +2670,14 @@ function buildAlgoDetailHTML(r) {
 
     html += `
                 <tr style="background:rgba(99,102,241,0.07);font-weight:700">
-                  <td colspan="3" style="text-align:left;padding-left:14px">✅ Total Used:</td>
+                  <td colspan="3" style="text-align:left;padding-left:12px">✅ Total Used:</td>
                   <td>${usedArea.toLocaleString()}</td>
                 </tr>
                 <tr style="background:rgba(239,68,68,0.06);font-weight:700">
-                  <td colspan="3" style="text-align:left;padding-left:14px">🔴 Free Area:</td>
+                  <td colspan="3" style="text-align:left;padding-left:12px">🔴 Free Area:</td>
                   <td style="color:var(--error)">${freeArea.toLocaleString()}</td>
                 </tr>
+                </tbody>
               </table>
             </div>
           </div>`;
@@ -2635,55 +2745,55 @@ function renderComparisonSummary() {
 
   if (hasProjectInfo) {
     reportHTML += `
-    <div style="margin-bottom:20px;padding:20px;background:linear-gradient(135deg,rgba(79,70,229,0.08),rgba(168,85,247,0.04));border-radius:12px;border:2px solid rgba(79,70,229,0.2)">
-      <h3 style="color:var(--primary);margin-top:0;margin-bottom:14px;font-size:18px;">🏗️ ${currentLang === 'ar' ? 'معلومات المشروع' : 'Project Information'}</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-        ${projName ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--primary)">
-          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">📌 ${currentLang === 'ar' ? 'اسم المشروع' : 'Project Name'}</div>
-          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projName}</div>
+    <div style="margin-bottom:2 mm;padding:2 mm;background:linear-gradient(135deg,rgba(79,70,229,0.08),rgba(168,85,247,0.04));border-radius:1 mm;border: 2px solid rgba(79,70,229,0.2)">
+      <h3 style="color:var(--primary);margin-top:0;margin-bottom:1 mm;font-size:12px;">🏗️ ${currentLang === 'ar' ? 'معلومات المشروع' : 'Project Information'}</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(20 mm,1fr));gap:1 mm">
+        ${projName ? `<div style="padding:1 mm 1 mm;background:white;border-radius: mm;border-left: mm solid var(--primary)">
+          <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0. mm;font-weight:700">📌 ${currentLang === 'ar' ? 'اسم المشروع' : 'Project Name'}</div>
+          <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-top: mm">${projName}</div>
         </div>` : ''}
-        ${projOwner ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--secondary)">
-          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">👤 ${currentLang === 'ar' ? 'صاحب المشروع' : 'Project Owner'}</div>
-          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projOwner}</div>
+        ${projOwner ? `<div style="padding:1 mm 1 mm;background:white;border-radius: mm;border-left: mm solid var(--secondary)">
+          <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0. mm;font-weight:700">👤 ${currentLang === 'ar' ? 'صاحب المشروع' : 'Project Owner'}</div>
+          <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-top: mm">${projOwner}</div>
         </div>` : ''}
-        ${projConsultant ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--success)">
-          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">📋 ${currentLang === 'ar' ? 'الاستشاري' : 'Consultant'}</div>
-          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projConsultant}</div>
+        ${projConsultant ? `<div style="padding:1 mm 1 mm;background:white;border-radius: mm;border-left: mm solid var(--success)">
+          <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0. mm;font-weight:700">📋 ${currentLang === 'ar' ? 'الاستشاري' : 'Consultant'}</div>
+          <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-top: mm">${projConsultant}</div>
         </div>` : ''}
-        ${projContractor ? `<div style="padding:10px 14px;background:white;border-radius:8px;border-left:4px solid var(--warning)">
-          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:700">🏢 ${currentLang === 'ar' ? 'المقاول الرئيسي' : 'Main Contractor'}</div>
-          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-top:4px">${projContractor}</div>
+        ${projContractor ? `<div style="padding:1 mm 1 mm;background:white;border-radius: mm;border-left: mm solid var(--warning)">
+          <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0. mm;font-weight:700">🏢 ${currentLang === 'ar' ? 'المقاول الرئيسي' : 'Main Contractor'}</div>
+          <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-top: mm">${projContractor}</div>
         </div>` : ''}
       </div>
     </div>`;
   }
 
   reportHTML += `
-    <div style="margin-bottom:24px;padding:20px;background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.05));border-radius:12px;border:2px solid rgba(16,185,129,0.3)">
-      <h3 style="color:var(--success);margin-top:0;margin-bottom:16px;font-size:18px;">📋 Final Report -Lengths and Margins</h3>
+    <div style="margin-bottom:2 mm;padding:2 mm;background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.05));border-radius:1 mm;border: 2px solid rgba(16,185,129,0.3)">
+      <h3 style="color:var(--success);margin-top:0;margin-bottom:1 mm;font-size:12px;">📋 Final Report -Lengths and Margins</h3>
       
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px">
-        <div style="padding:12px;background:white;border-radius:8px;border-left:4px solid var(--primary)">
-          <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">📐 Original Dimensions</div>
-          <div style="font-size:18px;font-weight:700;color:var(--primary);margin-top:4px">${binW} × ${binH} mm</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(20 mm,1fr));gap:1 mm;margin-bottom:1 mm">
+        <div style="padding:1 mm;background:white;border-radius: mm;border-left: mm solid var(--primary)">
+          <div style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:0. mm">📐 Original Dimensions</div>
+          <div style="font-size:12px;font-weight:700;color:var(--primary);margin-top: mm">${binW} × ${binH} mm</div>
         </div>
-        <div style="padding:12px;background:white;border-radius:8px;border-left:4px solid var(--success)">
-          <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">📐 Effective Dimensions</div>
-          <div style="font-size:18px;font-weight:700;color:var(--success);margin-top:4px">${effectiveW} × ${effectiveH} mm</div>
+        <div style="padding:1 mm;background:white;border-radius: mm;border-left: mm solid var(--success)">
+          <div style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:0. mm">📐 Effective Dimensions</div>
+          <div style="font-size:12px;font-weight:700;color:var(--success);margin-top: mm">${effectiveW} × ${effectiveH} mm</div>
         </div>
-        <div style="padding:12px;background:white;border-radius:8px;border-left:4px solid var(--warning)">
-          <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">↔ Outer Margin (each side)</div>
-          <div style="font-size:18px;font-weight:700;color:var(--warning);margin-top:4px">${outerMargin} mm</div>
+        <div style="padding:1 mm;background:white;border-radius: mm;border-left: mm solid var(--warning)">
+          <div style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:0. mm">↔ Outer Margin (each side)</div>
+          <div style="font-size:12px;font-weight:700;color:var(--warning);margin-top: mm">${outerMargin} mm</div>
         </div>
-        <div style="padding:12px;background:white;border-radius:8px;border-left:4px solid var(--secondary)">
-          <div style="font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">↕ Piece Spacing</div>
-          <div style="font-size:18px;font-weight:700;color:var(--secondary);margin-top:4px">${pieceSpacing} mm</div>
+        <div style="padding:1 mm;background:white;border-radius: mm;border-left: mm solid var(--secondary)">
+          <div style="font-size:12px;color:var(--text-light);text-transform:uppercase;letter-spacing:0. mm">↕ Piece Spacing</div>
+          <div style="font-size:12px;font-weight:700;color:var(--secondary);margin-top: mm">${pieceSpacing} mm</div>
         </div>
       </div>
       
-      <div style="padding:12px;background:rgba(99,102,241,0.08);border-radius:8px;margin-top:8px">
-        <div style="font-size:13px;color:var(--text-dark)"><strong>📝 Summary:</strong></div>
-        <ul style="margin:8px 0 0 0;padding-left:20px;color:var(--text-dark);font-size:13px">
+      <div style="padding:1 mm;background:rgba(99,102,241,0.08);border-radius: mm;margin-top: mm">
+        <div style="font-size:12px;color:var(--text-dark)"><strong>📝 Summary:</strong></div>
+        <ul style="margin: mm 0 0 0;padding-left:2 mm;color:var(--text-dark);font-size:12px">
           <li>Total margin trimmed from each side: <strong>${outerMargin * 2} mm</strong></li>
           <li>Total outer margin area removed: <strong>${binW * binH - effectiveW * effectiveH} mm²</strong></li>
           <li>Spacing between pieces: <strong>${pieceSpacing} mm</strong></li>
@@ -2737,7 +2847,7 @@ function renderComparisonSummary() {
   // === Per-Box-Type Summary Section ===
   if (results.length > 0) {
     const bestResult = results[0]; // best by ratio (sorted)
-    // Gather box type dims
+    // Gather SLAB type dims
     const boxTypes = gatherBoxTypes();
     const boxTypeDims = {};
     for (const bt of boxTypes) {
@@ -2756,7 +2866,7 @@ function renderComparisonSummary() {
     }
 
     html += `
-      <h3 style="color:var(--text-dark);margin-bottom:14px;font-size:18px;">📦 ${currentLang === 'ar' ? 'ملخص حسب نوع الصندوق' : 'Summary by Box Type'}</h3>
+      <h3 style="color:var(--text-dark);margin-bottom:1 mm;font-size:12px;">📦 ${currentLang === 'ar' ? 'ملخص حسب نوع الصندوق' : 'Summary by SLAB Type'}</h3>
       <div class="box-type-summary-grid">`;
 
     for (const btName of Object.keys(btStats)) {
@@ -2795,7 +2905,7 @@ function renderComparisonSummary() {
   }
 
   html += `
-    <h3 style="color:var(--text-dark);margin-bottom:16px;font-size:18px;">📈 Results Comparison and Unused Areas</h3>
+    <h3 style="color:var(--text-dark);margin-bottom:1 mm;font-size:12px;">📈 Results Comparison and Unused Areas</h3>
     <table id="comparisonTable">
       <tr>
         <th>Algorithm</th>
@@ -2811,7 +2921,7 @@ function renderComparisonSummary() {
   for (let r of results) {
     const isBest = r.heur === bestHeur;
     const bgColor = isBest
-      ? "background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.08));border-left:3px solid var(--success)"
+      ? "background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.08));border-left: mm solid var(--success)"
       : "";
     const detailId = "det_" + r.heur.replace(/\s+/g, "_");
     html += `
@@ -2848,22 +2958,22 @@ function renderComparisonSummary() {
     const suggestions = suggestOptimalFill(wasteAnalysis.topWaste);
 
     wasteHTML += `
-      <div style="margin-top:24px;padding:16px;background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.04));border-radius:8px;border:1px solid rgba(239,68,68,0.2)">
+      <div style="margin-top:2 mm;padding:1 mm;background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.04));border-radius: mm;border: 2px solid rgba(239,68,68,0.2)">
         <h4 style="color:var(--error);margin-top:0">⚠️ Unused Areas Report (Best Algorithm)</h4>
         
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
-          <div style="padding:10px;background:white;border-radius:6px;border-left:3px solid var(--error)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1 mm;margin:1 mm 0">
+          <div style="padding:1 mm;background:white;border-radius: mm;border-left: mm solid var(--error)">
             <div style="font-size:12px;color:var(--text-light);text-transform:uppercase">📊 Total Free Area</div>
-            <div style="font-size:20px;font-weight:700;color:var(--error);margin-top:4px">${wasteAnalysis.totalWaste.toLocaleString()} px²</div>
+            <div style="font-size:2 mm;font-weight:700;color:var(--error);margin-top: mm">${wasteAnalysis.totalWaste.toLocaleString()} mm²</div>
           </div>
-          <div style="padding:10px;background:white;border-radius:6px;border-left:3px solid var(--warning)">
+          <div style="padding:1 mm;background:white;border-radius: mm;border-left: mm solid var(--warning)">
             <div style="font-size:12px;color:var(--text-light);text-transform:uppercase">📦 Waste Ratio</div>
-            <div style="font-size:20px;font-weight:700;color:var(--warning);margin-top:4px">${(100 - bestResult.ratio * 100).toFixed(2)}%</div>
+            <div style="font-size:2 mm;font-weight:700;color:var(--warning);margin-top: mm">${(100 - bestResult.ratio * 100).toFixed(2)}%</div>
           </div>
         </div>
         
-        <h5 style="margin-top:16px;margin-bottom:8px;color:var(--text-dark)">🎯 Top 5 Empty Areas:</h5>
-        <table style="margin-bottom:12px">
+        <h5 style="margin-top:1 mm;margin-bottom: mm;color:var(--text-dark)">🎯 Top 5 Empty Areas:</h5>
+        <table style="margin-bottom:1 mm">
           <tr>
             <th>#</th>
             <th>Dimensions</th>
@@ -2876,8 +2986,8 @@ function renderComparisonSummary() {
       wasteHTML += `
         <tr>
           <td style="font-weight:700">${i + 1}</td>
-          <td>${waste.width}×${waste.height} px</td>
-          <td style="font-weight:700;color:var(--error)">${waste.area.toLocaleString()} px²</td>
+          <td>${waste.width}×${waste.height} mm</td>
+          <td style="font-weight:700;color:var(--error)">${waste.area.toLocaleString()} mm²</td>
         </tr>
       `;
     }
@@ -2886,27 +2996,27 @@ function renderComparisonSummary() {
 
     if (suggestions.length > 0) {
       wasteHTML += `
-        <h5 style="margin-top:16px;margin-bottom:8px;color:var(--text-dark)">💡 Best Ways to Utilize Empty Areas:</h5>
+        <h5 style="margin-top:1 mm;margin-bottom: mm;color:var(--text-dark)">💡 Best Ways to Utilize Empty Areas:</h5>
       `;
 
       for (let i = 0; i < suggestions.length; i++) {
         const sugg = suggestions[i];
         if (sugg.options.length > 0) {
           wasteHTML += `
-            <div style="margin:12px 0;padding:10px;background:white;border-radius:6px;border:1px solid var(--border)">
-              <div style="font-weight:700;color:var(--primary);margin-bottom:8px">
-                Region ${i + 1}: ${sugg.dimensions} (${sugg.wasteArea.toLocaleString()} px²)
+            <div style="margin:1 mm 0;padding:1 mm;background:white;border-radius: mm;border: 2px solid var(--border)">
+              <div style="font-weight:700;color:var(--primary);margin-bottom: mm">
+                Region ${i + 1}: ${sugg.dimensions} (${sugg.wasteArea.toLocaleString()} mm²)
               </div>
-              <div style="display:grid;gap:6px">
+              <div style="display:grid;gap: mm">
           `;
 
           for (let opt of sugg.options) {
             wasteHTML += `
-              <div style="padding:8px;background:rgba(99,102,241,0.05);border-radius:4px;border-left:3px solid var(--primary)">
+              <div style="padding: mm;background:rgba(99,102,241,0.05);border-radius: mm;border-left: mm solid var(--primary)">
                 <span style="font-weight:600">📌 ${opt.type}:</span> 
                 can fit <span style="color:var(--success);font-weight:700">${opt.pieces} pieces</span> 
                 with size <span style="color:var(--primary);font-weight:600">${opt.size}</span> 
-                (${opt.area.toLocaleString()} px² per piece)
+                (${opt.area.toLocaleString()} mm² per piece)
               </div>
             `;
           }
@@ -2917,7 +3027,7 @@ function renderComparisonSummary() {
     }
 
     wasteHTML += `
-      <div style="margin-top:12px;padding:10px;background:rgba(16,185,129,0.08);border-radius:6px;border-left:3px solid var(--success)">
+      <div style="margin-top:1 mm;padding:1 mm;background:rgba(16,185,129,0.08);border-radius: mm;border-left: mm solid var(--success)">
         <span style="font-size:12px;color:var(--text-light)">💬 Tip:</span>
         <span style="color:var(--text-dark);font-weight:500">
           You can use empty areas to add additional pieces in the future or divide them into smaller parts as needed
@@ -2944,11 +3054,18 @@ function buildAlgoComparisonPanel(algoSummaries, bestAlgo) {
   const panel = document.getElementById("algoComparisonPanel");
   const t = translations[currentLang];
 
-  let html = `<div style="margin-bottom:8px">
-        <h3 style="color:var(--text-dark);font-size:18px;margin-bottom:4px;">🏆 ${currentLang === "ar" ? "مقارنة الخوارزميات — اضغط لعرض النتائج" : "Algorithm Comparison — Click to View Results"}</h3>
-        <p style="font-size:13px;color:var(--text-muted);margin:0;">${currentLang === "ar" ? "تم تنفيذ جميع الخوارزميات. اضغط على أي بطاقة لعرض التفاصيل والتقارير." : "All algorithms executed. Click any card to view details and export reports."}</p>
+  let html = `<div style="margin-bottom: mm; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h3 style="color:var(--text-dark);font-size:12px;margin-bottom: mm;">🏆 ${currentLang === "ar" ? "أفضل نتيجة" : "Best Result"}</h3>
+          <p style="font-size:12px;color:var(--text-muted);margin:0;">${currentLang === "ar" ? "تم تحديد أفضل توزيع تلقائياً." : "The best arrangement has been automatically selected."}</p>
+        </div>
+        <button id="toggleAdvBtn" class="btn ghost" style="font-size:12px; padding: mm 1 mm; height:fit-content;" onclick="document.getElementById('advCompSection').style.display = document.getElementById('advCompSection').style.display === 'none' ? 'block' : 'none'; this.innerText = this.innerText.includes('Show') || this.innerText.includes('عرض') ? (currentLang==='ar'?'إخفاء التفاصيل المتقدمة':'Hide Advanced Details') : (currentLang==='ar'?'عرض التفاصيل المتقدمة':'Show Advanced Details');">
+           ${currentLang === "ar" ? "عرض التفاصيل المتقدمة" : "Show Advanced Details"}
+        </button>
       </div>
-      <div class="algo-cards-grid">`;
+      <div id="advCompSection" style="display:none; margin-top:2 mm; padding:1 mm; border: 2px solid var(--border); border-radius:var(--radius-md); background:var(--bg-light);">
+        <h4 style="margin-bottom:1 mm; color:var(--text-dark);">📊 ${currentLang === "ar" ? "مقارنة الخوارزميات — اضغط لعرض النتائج" : "Algorithm Comparison — Click to View Results"}</h4>
+        <div class="algo-cards-grid">`;
 
   for (const algo of ALL_ALGOS) {
     const s = algoSummaries[algo];
@@ -2964,14 +3081,14 @@ function buildAlgoComparisonPanel(algoSummaries, bestAlgo) {
             ${isBest ? '<span class="algo-badge best-badge">⭐ BEST</span>' : ""}
           </div>
           <div class="algo-stats">
-            <div class="algo-stat" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px; background: rgba(79, 70, 229, 0.03); border: 1px dashed rgba(79, 70, 229, 0.2);">
-              <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">📦 ${currentLang === 'ar' ? 'الألواح حسب نوع الصندوق' : 'Slabs per Box Type'}</div>
+            <div class="algo-stat" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 1 mm; background: rgba(79, 70, 229, 0.03); border:  mm dashed rgba(79, 70, 229, 0.2);">
+              <div style="font-size: 1 mm; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0. mm; margin-bottom:  mm;">📦 ${currentLang === 'ar' ? 'الألواح حسب نوع الصندوق' : 'Slabs per SLAB Type'}</div>
               <div style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%;">
                 ${Object.entries(s.boxTypeSlabs || {})
         .map(
           ([bt, c]) => `
-                  <div style="font-size: 12px; font-weight: 700; color: var(--primary); background: white; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(79, 70, 229, 0.15); display: flex; align-items: center; gap: 4px;">
-                    <span style="color: var(--text-muted); font-size: 10px;">${bt}:</span> ${c}
+                  <div style="font-size: 1 mm; font-weight: 700; color: var(--primary); background: white; padding:  mm  mm; border-radius:  mm; border:  mm solid rgba(79, 70, 229, 0.15); display: flex; align-items: center; gap: 8px;">
+                    <span style="color: var(--text-muted); font-size: 1 mm;">${bt}:</span> ${c}
                   </div>
                 `,
         )
@@ -2990,7 +3107,7 @@ function buildAlgoComparisonPanel(algoSummaries, bestAlgo) {
         </div>`;
   }
 
-  html += "</div>";
+  html += "</div></div>";
   panel.innerHTML = html;
 }
 /* --- Toggle all canvas-wrap panels inside a heuristic group --- */
@@ -3012,7 +3129,27 @@ function toggleHeurGroup(groupId, btn) {
     if (tb)
       tb.innerHTML = anyVisible ? "\ud83d\ude48 Show" : "\ud83d\udc41 Hide";
     const wrap = b.closest(".canvas-wrap");
-    if (wrap) wrap.style.minHeight = anyVisible ? "" : "280px";
+    if (wrap) wrap.style.minHeight = anyVisible ? "" : "28 mm";
+  });
+
+  const btBodies = group.querySelectorAll(".box-type-body");
+  const btBtns = group.querySelectorAll(".box-type-toggle");
+  btBodies.forEach((b, i) => {
+    if (anyVisible) {
+      b.classList.add('collapsed');
+      b.style.display = 'none';
+      if (btBtns[i]) {
+        btBtns[i].innerHTML = `👁 ${currentLang === 'ar' ? 'إظهار' : 'Show'} <i class="toggle-arrow">▼</i>`;
+        btBtns[i].classList.add('collapsed');
+      }
+    } else {
+      b.classList.remove('collapsed');
+      b.style.display = 'block';
+      if (btBtns[i]) {
+        btBtns[i].innerHTML = `🙈 ${currentLang === 'ar' ? 'إخفاء' : 'Hide'} <i class="toggle-arrow">▼</i>`;
+        btBtns[i].classList.remove('collapsed');
+      }
+    }
   });
 
   // Update group button label
@@ -3033,19 +3170,29 @@ function toggleHeurGroup(groupId, btn) {
   }
 }
 
-/* --- Toggle box type group visibility --- */
+/* --- Toggle SLAB type group visibility --- */
 function toggleBoxTypeGroup(groupId, btnEl) {
+  const heurGroup = btnEl.closest('.heur-group');
+  if (heurGroup) {
+    const heurToggle = heurGroup.querySelector('.btn-heur-toggle');
+    if (heurToggle && heurToggle.classList.contains('all-hidden')) {
+      return;
+    }
+  }
+
   const body = document.getElementById('body_' + groupId);
   if (!body) return;
   const isCollapsed = body.classList.contains('collapsed');
   if (isCollapsed) {
     body.classList.remove('collapsed');
+    body.style.display = 'block';
     btnEl.classList.remove('collapsed');
     btnEl.innerHTML = currentLang === 'ar'
       ? '🙈 إخفاء <i class="toggle-arrow">▼</i>'
       : '🙈 Hide <i class="toggle-arrow">▼</i>';
   } else {
     body.classList.add('collapsed');
+    body.style.display = 'none';
     btnEl.classList.add('collapsed');
     btnEl.innerHTML = currentLang === 'ar'
       ? '👁 إظهار <i class="toggle-arrow">▼</i>'
@@ -3085,7 +3232,7 @@ function showAlgoResults(algoName) {
     }
     const ratio = totalArea > 0 ? totalUsed / totalArea : 0;
     const binsCount = entry.bins.length;
-    if (ratio > bestRatio || (ratio === bestRatio && binsCount < bestBins)) {
+    if (binsCount < bestBins || (binsCount === bestBins && ratio > bestRatio)) {
       bestRatio = ratio;
       bestBins = binsCount;
       bestH = k;
@@ -3100,7 +3247,7 @@ function showAlgoResults(algoName) {
     : false;
   const { outerMargin, pieceSpacing, binW, binH } = window.marginInfo;
 
-  // Gather all box types info for headers
+  // Gather all SLAB types info for headers
   const boxTypes = gatherBoxTypes();
   const boxTypeDims = {};
   for (const bt of boxTypes) {
@@ -3128,13 +3275,13 @@ function showAlgoResults(algoName) {
             <div class="heur-group-title">📐 ${heur.toUpperCase()} — <span style="color:var(--text-muted);font-weight:600;font-size:12px">${algoLabel}</span></div>
             <div class="heur-group-meta">${entry.bins.length} ${currentLang === "ar" ? "لوح" : "slab(s)"}</div>
           </div>
-          <button class="btn-heur-toggle" onclick="toggleHeurGroup('${heurId}', this)">
-            🙈 ${currentLang === "ar" ? "إخفاء الكل" : "Hide All"}
+          <button class="btn-heur-toggle all-hidden" onclick="toggleHeurGroup('${heurId}', this)">
+            👁 ${currentLang === "ar" ? "إظهار الكل" : "Show All"}
           </button>
         `;
     heurGroupDiv.appendChild(heurHeaderDiv);
 
-    // --- Group bins by box type name ---
+    // --- Group bins by SLAB type name ---
     const binsByBoxType = {};
     for (const res of entry.bins) {
       const btName = res.boxTypeName || "DEFAULT";
@@ -3148,7 +3295,7 @@ function showAlgoResults(algoName) {
       const btDims = boxTypeDims[btName] || { w: '?', h: '?' };
       const btGroupId = `btg_${heur}_${btName.replace(/[^a-zA-Z0-9]/g, '_')}`;
 
-      // Compute stats for this box type group
+      // Compute stats for this SLAB type group
       let btUsed = 0, btArea = 0, btPieces = 0;
       for (const b of btBins) {
         btUsed += usedAreaFrom(b.placements);
@@ -3157,12 +3304,12 @@ function showAlgoResults(algoName) {
       }
       const btUtil = btArea > 0 ? ((btUsed / btArea) * 100).toFixed(1) : '0.0';
 
-      // Box type group wrapper
+      // SLAB type group wrapper
       const btGroupEl = document.createElement("div");
       btGroupEl.className = "box-type-group";
       btGroupEl.id = btGroupId;
 
-      // Box type header
+      // SLAB type header
       const btHeader = document.createElement("div");
       btHeader.className = "box-type-header";
       btHeader.onclick = function (e) {
@@ -3193,15 +3340,16 @@ function showAlgoResults(algoName) {
             <div class="stat-label">${currentLang === 'ar' ? 'استغلال' : 'Util.'}</div>
           </div>
         </div>
-        <button class="box-type-toggle" onclick="toggleBoxTypeGroup('${btGroupId}', this)">
-          🙈 ${currentLang === 'ar' ? 'إخفاء' : 'Hide'} <i class="toggle-arrow">▼</i>
+        <button class="box-type-toggle collapsed" onclick="toggleBoxTypeGroup('${btGroupId}', this)">
+          👁 ${currentLang === 'ar' ? 'إظهار' : 'Show'} <i class="toggle-arrow">▼</i>
         </button>
       `;
       btGroupEl.appendChild(btHeader);
 
-      // Box type body (canvases)
+      // SLAB type body (canvases)
       const btBody = document.createElement("div");
-      btBody.className = "box-type-body";
+      btBody.className = "box-type-body collapsed";
+      btBody.style.display = "none";
       btBody.id = "body_" + btGroupId;
 
       const canvasGrid = document.createElement("div");
@@ -3210,8 +3358,29 @@ function showAlgoResults(algoName) {
       btGroupEl.appendChild(btBody);
       heurGroupDiv.appendChild(btGroupEl);
 
-      // Draw canvases for bins of this box type
-      btBins.forEach((res, idx) => {
+      // Group identical bins
+      const groupedBins = [];
+      const sigMap = new Map();
+      btBins.forEach((res, origIdx) => {
+        const sorted = [...res.placements].sort((a, b) => {
+          if (Math.abs(a.x - b.x) > 0.1) return a.x - b.x;
+          if (Math.abs(a.y - b.y) > 0.1) return a.y - b.y;
+          if (Math.abs(a.w - b.w) > 0.1) return a.w - b.w;
+          return a.h - b.h;
+        });
+        const sig = sorted.map(p => `${Math.round(p.x)},${Math.round(p.y)},${Math.round(p.w)},${Math.round(p.h)}`).join('|');
+        if (sigMap.has(sig)) {
+          groupedBins[sigMap.get(sig)].count++;
+          groupedBins[sigMap.get(sig)].indices.push(origIdx + 1);
+        } else {
+          sigMap.set(sig, groupedBins.length);
+          groupedBins.push({ res, count: 1, indices: [origIdx + 1] });
+        }
+      });
+
+      // Draw canvases for grouped bins
+      groupedBins.forEach((group) => {
+        const res = group.res;
         const actualBinW = res.bin.binWidth + 2 * outerMargin;
         const actualBinH = res.bin.binHeight + 2 * outerMargin;
         const dimsStr = `${actualBinW}×${actualBinH} mm`;
@@ -3224,10 +3393,19 @@ function showAlgoResults(algoName) {
           pieceSpacing > 0
             ? ` | ${translations[currentLang].pieceSpacingLabel}: ${pieceSpacing} mm`
             : "";
-        const binLabel =
-          currentLang === "ar"
-            ? `🟦 ${algoLabel} | ${heur.toUpperCase()} —${boxLabel} ${translations.ar.bin} #${idx + 1} (${dimsStr}${marginStr}${spacingStr})`
-            : `🟦 ${algoLabel} | ${heur.toUpperCase()} —${boxLabel} Slab #${idx + 1} (${dimsStr}${marginStr}${spacingStr})`;
+
+        let slabInfoStr = "";
+        if (group.count > 1) {
+          slabInfoStr = currentLang === "ar"
+            ? ` (x${group.count} ألواح متطابقة)`
+            : ` (x${group.count} Identical Slabs)`;
+        } else {
+          slabInfoStr = currentLang === "ar"
+            ? ` (${translations.ar.bin} #${group.indices[0]})`
+            : ` (Slab #${group.indices[0]})`;
+        }
+
+        const binLabel = `🟦 ${algoLabel} | ${heur.toUpperCase()} —${boxLabel}${slabInfoStr} (${dimsStr}${marginStr}${spacingStr})`;
 
         // Redirect createCanvasForBin to canvasGrid
         const _orig = canvasesContainer.appendChild.bind(canvasesContainer);
@@ -3269,11 +3447,11 @@ function renderExportBar(algoName) {
   container.innerHTML = `
         <div class="export-bar">
           <div class="bar-title">${dn.icon} ${currentLang === "ar" ? "تصدير تقارير — " + algoLabel : "Export Reports — " + algoLabel}</div>
-          <button id="dynExportDXF" class="btn" style="font-size: 12px; padding: 12px; background: var(--accent);">📐 AutoCAD (DXF)</button>
-          <button id="dynExportEN" class="btn" style="font-size: 12px; padding: 12px; background: var(--success);">📑 Report (EN)</button>
-          <button id="dynExportAR" class="btn" style="font-size: 12px; padding: 12px; background: var(--primary);">📑 Report (AR)</button>
-          <button id="dynExportSummary" class="btn" style="font-size: 12px; padding: 12px; background: #3b82f6;">📊 Summary (Excel)</button>
-          <button id="dynExportDetails" class="btn" style="font-size: 12px; padding: 12px; background: #8b5cf6;">📋 Details (Excel)</button>
+          <button id="dynExportDXF" class="btn" style="font-size: 1 mm; padding: 1 mm; background: var(--accent);">📐 AutoCAD (DXF)</button>
+          <button id="dynExportEN" class="btn" style="font-size: 1 mm; padding: 1 mm; background: var(--success);">📑 Report (EN)</button>
+          <button id="dynExportAR" class="btn" style="font-size: 1 mm; padding: 1 mm; background: var(--primary);">📑 Report (AR)</button>
+          <button id="dynExportSummary" class="btn" style="font-size: 1 mm; padding: 1 mm; background: #3b82f6;">📊 Summary (Excel)</button>
+          <button id="dynExportDetails" class="btn" style="font-size: 1 mm; padding: 1 mm; background: #8b5cf6;">📋 Details (Excel)</button>
         </div>
       `;
 
@@ -3313,7 +3491,7 @@ function findAndSetBestPacking() {
     }
     const ratio = totalArea > 0 ? totalUsed / totalArea : 0;
     const binsCount = entry.bins.length;
-    if (ratio > bestRatio || (ratio === bestRatio && binsCount < bestBins)) {
+    if (binsCount < bestBins || (binsCount === bestBins && ratio > bestRatio)) {
       bestRatio = ratio;
       bestBins = binsCount;
       bestH = k;
@@ -3388,7 +3566,7 @@ function runAll() {
       const pieceSpacing =
         parseInt(document.getElementById("pieceSpacing").value) || 0;
 
-      // Group pieces by box type
+      // Group pieces by SLAB type
       const piecesByBox = {};
       for (const bt of boxTypes) {
         piecesByBox[bt.name] = { box: bt, types: [] };
@@ -3402,7 +3580,7 @@ function runAll() {
       // Use the first box for marginInfo (for compatibility)
       window.marginInfo = { outerMargin, pieceSpacing, binW: boxTypes[0].w, binH: boxTypes[0].h };
 
-      // === Run ALL 4 algorithms for EACH box type ===
+      // === Run ALL 4 algorithms for EACH SLAB type ===
       const algoSummaries = {};
       let globalBestAlgo = null,
         globalBestRatio = -1,
@@ -3410,13 +3588,13 @@ function runAll() {
 
       for (const algo of ALL_ALGOS) {
         const algoResults = {};
-        let algoTotalUsed = 0,
-          algoTotalArea = 0,
-          algoTotalSlabs = 0,
-          algoTotalPieces = 0,
-          algoTotalRemaining = 0;
+        let algoBestSlabs = Infinity;
+        let algoBestRatio = -1;
+        let algoBestPieces = 0;
+        let algoBestRemaining = 0;
+        let algoBestHeur = null;
+        let algoBestBoxTypeSlabs = {};
         const heurSlabs = {};
-        const boxTypeSlabs = {};
 
         for (let heur of checkedH) {
           let combinedBins = [];
@@ -3424,7 +3602,7 @@ function runAll() {
           let combinedTypes = [];
           let typeOffset = 0;
 
-          // Process each box type independently
+          // Process each SLAB type independently
           for (const boxName of Object.keys(piecesByBox)) {
             const entry = piecesByBox[boxName];
             const boxW = entry.box.w;
@@ -3455,7 +3633,7 @@ function runAll() {
               pieceSpacing,
             );
 
-            // Label bins with box type name
+            // Label bins with SLAB type name
             for (const b of out.bins) {
               b.boxTypeName = boxName;
             }
@@ -3473,47 +3651,49 @@ function runAll() {
           };
           heurSlabs[heur] = combinedBins.length;
 
+
+          let heurTotalUsed = 0, heurTotalArea = 0, heurTotalPieces = 0;
           for (let b of combinedBins) {
-            algoTotalUsed += usedAreaFrom(b.placements);
-            algoTotalArea += b.bin.binWidth * b.bin.binHeight;
-            algoTotalPieces += b.placements.length;
+            heurTotalUsed += usedAreaFrom(b.placements);
+            heurTotalArea += b.bin.binWidth * b.bin.binHeight;
+            heurTotalPieces += b.placements.length;
           }
-          algoTotalSlabs += combinedBins.length;
-          algoTotalRemaining += combinedRemaining.length;
+          const heurRatio = heurTotalArea > 0 ? (heurTotalUsed / heurTotalArea) * 100 : 0;
+
+          if (combinedBins.length < algoBestSlabs || (combinedBins.length === algoBestSlabs && heurRatio > algoBestRatio)) {
+            algoBestSlabs = combinedBins.length;
+            algoBestRatio = heurRatio;
+            algoBestPieces = heurTotalPieces;
+            algoBestRemaining = combinedRemaining.length;
+            algoBestHeur = heur;
+
+            algoBestBoxTypeSlabs = {};
+            for (const b of combinedBins) {
+              const btName = b.boxTypeName || 'DEFAULT';
+              algoBestBoxTypeSlabs[btName] = (algoBestBoxTypeSlabs[btName] || 0) + 1;
+            }
+          }
         }
 
         window.allAlgoResults[algo] = algoResults;
 
-        const utilization =
-          algoTotalArea > 0 ? (algoTotalUsed / algoTotalArea) * 100 : 0;
-        const waste = 100 - utilization;
-
-        // Compute per-box-type slab counts from algoResults (use first heur)
-        const firstHeur = checkedH[0];
-        if (algoResults[firstHeur]) {
-          for (const b of algoResults[firstHeur].bins) {
-            const btName = b.boxTypeName || 'DEFAULT';
-            boxTypeSlabs[btName] = (boxTypeSlabs[btName] || 0) + 1;
-          }
-        }
-
         algoSummaries[algo] = {
-          totalSlabs: algoTotalSlabs,
+          totalSlabs: algoBestSlabs,
           heurSlabs: heurSlabs,
-          boxTypeSlabs: boxTypeSlabs,
-          totalPieces: algoTotalPieces,
-          utilization: utilization,
-          waste: waste,
-          remaining: algoTotalRemaining,
+          boxTypeSlabs: algoBestBoxTypeSlabs,
+          totalPieces: algoBestPieces,
+          utilization: algoBestRatio,
+          waste: 100 - algoBestRatio,
+          remaining: algoBestRemaining,
         };
 
         // Track global best (fewest slabs first, then highest utilization)
         if (
-          algoTotalSlabs < globalBestSlabs ||
-          (algoTotalSlabs === globalBestSlabs && utilization > globalBestRatio)
+          algoBestSlabs < globalBestSlabs ||
+          (algoBestSlabs === globalBestSlabs && algoBestRatio > globalBestRatio)
         ) {
-          globalBestSlabs = algoTotalSlabs;
-          globalBestRatio = utilization;
+          globalBestSlabs = algoBestSlabs;
+          globalBestRatio = algoBestRatio;
           globalBestAlgo = algo;
         }
       }
@@ -3541,7 +3721,7 @@ function runAll() {
 
 /* --- init defaults --- */
 (function initDefaults() {
-  // Default box types
+  // Default SLAB types
   addBoxTypeRow("STN-001", 3270, 1590);
   addBoxTypeRow("STN-002", 2000, 1200);
   // Default piece types (assigned to STN-001)

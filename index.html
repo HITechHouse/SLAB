@@ -67,14 +67,14 @@
         </div>
       </div>
 
-      <!-- Section 1: Box Types -->
+      <!-- Section 1: SLAB Types -->
       <div class="control-card">
         <div
           style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg-light); padding-bottom: 12px; margin-bottom: 16px;">
-          <label style="margin: 0; border: none; padding: 0;">📦 Box Types</label>
+          <label style="margin: 0; border: none; padding: 0;">📦 SLAB Types</label>
           <div style="display: flex; gap: 8px;">
             <button id="addBoxType" class="btn"
-              style="padding: 8px 16px; font-size: 12px; background: var(--primary);">+ Add Box Type</button>
+              style="padding: 8px 16px; font-size: 12px; background: var(--primary);">+ Add SLAB Type</button>
           </div>
         </div>
         <div style="overflow-x: auto;">
@@ -83,7 +83,7 @@
               <tr style="background: var(--bg-light); border-bottom: 2px solid var(--border);">
                 <th
                   style="padding: 10px 12px; text-align: left; font-weight: 700; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; width: 35%;">
-                  BOX NAME</th>
+                  SLAB NAME</th>
                 <th
                   style="padding: 10px 12px; text-align: left; font-weight: 700; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; width: 25%;">
                   WIDTH (mm)</th>
@@ -96,7 +96,7 @@
               </tr>
             </thead>
             <tbody id="boxTypesBody">
-              <!-- Box type rows injected by JS -->
+              <!-- SLAB type rows injected by JS -->
             </tbody>
           </table>
         </div>
@@ -131,7 +131,7 @@
               <tr style="background: var(--bg-light); border-bottom: 2px solid var(--border);">
                 <th
                   style="padding: 10px 12px; text-align: left; font-weight: 700; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; width: 25%;">
-                  BOX TYPE</th>
+                  SLAB type</th>
                 <th
                   style="padding: 10px 12px; text-align: left; font-weight: 700; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; width: 22%;">
                   PIECE LENGTH (mm)</th>
@@ -176,7 +176,7 @@
             <label class="checkbox-label" style="margin: 8px 0;"><input id="doLocal" type="checkbox" checked>
               <span>Local Optimization</span></label>
           </div>
-          <div>
+          <div style="display: none;">
             <span
               style="font-size: 11px; color: var(--text-muted); font-weight: 800; display: block; margin-bottom: 12px; letter-spacing: 0.5px;">EVALUATION
               HEURISTICS</span>
@@ -191,7 +191,7 @@
                   checked> <span>CPR</span></label>
             </div>
           </div>
-          <div>
+          <div style="display: none;">
             <span
               style="font-size: 11px; color: var(--text-muted); font-weight: 800; display: block; margin-bottom: 12px; letter-spacing: 0.5px;">OPTIMIZATION
               ALGORITHM</span>
@@ -221,7 +221,7 @@
   </div>
   <div style="max-width: 1000px; margin: 0 auto; padding: 0 20px;">
     <div id="algoComparisonPanel" style="margin-top: 24px;"></div>
-    <div id="globalResults" style="margin-top: 24px;"></div>
+    <div id="globalResults" style="margin-top: 24px; display: none;visibility: hidden;"></div>
     <div id="algoResultsArea"></div>
     <div class="canvases" id="canvases"></div>
     <div id="algoExportBar"></div>
